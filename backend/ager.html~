@@ -1,0 +1,20 @@
+var $name;
+var $age;
+prompt("Your name?",$name);
+prompt("Your name?",$age);
+switch (true) {
+    case ($age<0):
+        console.log("Age should be positive");
+        break;
+    case ($age<23):
+        console.log("You have still to learn");
+        break;
+    case ($age<65):
+        console.log("You have still to work");
+        break;
+    default:
+        console.log("Time for retirement");
+        break;
+
+
+}
