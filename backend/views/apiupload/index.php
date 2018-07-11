@@ -23,11 +23,9 @@ $api_key='tK5DsVHHZCjHlv81j9LiiQiiUWNryTQ1kmiXc5pZ';
 
 </style>
 
-<<<<<<< HEAD
-<p>See instructions at <a href="https://developers.ria.com/dom_ria">developers.ria.com</a></p>
-=======
 
->>>>>>> 2950e937746f0931d0afe4ab045a6a0d6d4c0bbb
+<p>See instructions at <a href="https://developers.ria.com/dom_ria">developers.ria.com</a></p>
+
 <p><b>developer's api_key:</b> <i><?= print_r($api_key) ?></i></p>
 
 <?php

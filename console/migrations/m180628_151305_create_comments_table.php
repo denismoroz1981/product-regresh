@@ -18,11 +18,11 @@ class m180628_151305_create_comments_table extends Migration
             'comment' => 'string',
             'user' => 'string',
             'isapproved' => 'integer',
-<<<<<<< HEAD
+
             'created_at' => 'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
-=======
-            'created_at' => $this->dateTime().' DEFAULT NOW()',
->>>>>>> 2950e937746f0931d0afe4ab045a6a0d6d4c0bbb
+
+            //'created_at' => $this->dateTime().' DEFAULT NOW()',
+
         ],
             'ENGINE=InnoDB', 'CHARACTER SET=utf8','COLLATE=utf8_general_ci'
         );

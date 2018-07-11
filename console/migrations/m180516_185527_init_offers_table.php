@@ -43,12 +43,12 @@ class m180516_185527_init_offers_table extends Migration
                  'district_name'=>'string',
                  'advert_type_name'=>'string',
                  'advert_type_id'=>'integer',
-<<<<<<< HEAD
+
                  //'admin_time_entered'=>$this->dateTime().' DEFAULT NOW()',
                  'admin_time_entered'=>'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP'
-=======
-                 'admin_time_entered'=>$this->dateTime().' DEFAULT NOW()'
->>>>>>> 2950e937746f0931d0afe4ab045a6a0d6d4c0bbb
+
+                 //'admin_time_entered'=>$this->dateTime().' DEFAULT NOW()'
+
              ],
                'ENGINE=InnoDB', 'CHARACTER SET=utf8','COLLATE=utf8_general_ci'
              );
