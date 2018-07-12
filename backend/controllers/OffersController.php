@@ -4,7 +4,7 @@ namespace backend\controllers;
 
 use Yii;
 use common\models\Offers;
-use common\models\OffersSearchModel;
+use common\models\OffersSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -35,7 +35,7 @@ class OffersController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new OffersSearchModel();
+        $searchModel = new OffersSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -65,10 +65,9 @@ class OffersController extends Controller
     public function actionCreate()
     {
         $model = new Offers();
-        //$model->flats_number=0;
-        //$model->city='Kiev';
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->admin_id]);
         }
 
         return $this->render('create', [
@@ -88,7 +87,7 @@ class OffersController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->admin_id]);
         }
 
         return $this->render('update', [

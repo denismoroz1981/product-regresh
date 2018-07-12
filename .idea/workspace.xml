@@ -3,7 +3,15 @@
   <component name="ChangeListManager">
     <list default="true" id="ec733214-5813-4c46-b50a-b24fc6963176" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/console/migrations/m180516_185527_init_offers_table.php" afterPath="$PROJECT_DIR$/console/migrations/m180516_185527_init_offers_table.php" />
+      <change beforePath="$PROJECT_DIR$/backend/controllers/OffersController.php" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/backend/views/offers/_form.php" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/backend/views/offers/_search.php" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/backend/views/offers/create.php" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/backend/views/offers/index.php" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/backend/views/offers/update.php" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/backend/views/offers/view.php" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/models/Offers.php" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/models/OffersSearch.php" afterPath="" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -17,11 +25,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="m180516_185527_init_offers_table.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="m180516_185527_init_offers_table.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/console/migrations/m180516_185527_init_offers_table.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="547">
-              <caret line="76" column="0" lean-forward="true" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+              <caret line="76" column="0" lean-forward="false" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OffersSearch.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/common/models/OffersSearch.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="360">
+              <caret line="23" column="5" lean-forward="true" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -155,6 +173,17 @@
             <path>
               <item name="product-regresh" type="b2602c69:ProjectViewProjectNode" />
               <item name="product-regresh" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="backend" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="product-regresh" type="b2602c69:ProjectViewProjectNode" />
+              <item name="product-regresh" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="backend" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="controllers" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="product-regresh" type="b2602c69:ProjectViewProjectNode" />
+              <item name="product-regresh" type="2a2b976b:PhpTreeStructureProvider$1" />
               <item name="common" type="2a2b976b:PhpTreeStructureProvider$1" />
             </path>
             <path>
@@ -213,12 +242,12 @@
       <updated>1531244030128</updated>
       <workItem from="1531244032470" duration="176000" />
       <workItem from="1531245426070" duration="7745000" />
-      <workItem from="1531415793409" duration="1580000" />
+      <workItem from="1531415793409" duration="2682000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9501000" />
+    <option name="totallyTimeSpent" value="10603000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="75" y="44" width="1303" height="780" extended-state="6" />
@@ -389,18 +418,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/common/models/OffersSearch.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/common/models/Offers.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+        <state relative-caret-position="461">
+          <caret line="156" column="0" lean-forward="true" selection-start-line="156" selection-start-column="0" selection-end-line="156" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -408,7 +429,31 @@
     <entry file="file://$PROJECT_DIR$/console/migrations/m180516_185527_init_offers_table.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="547">
-          <caret line="76" column="0" lean-forward="true" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+          <caret line="76" column="0" lean-forward="false" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/views/offers/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/controllers/OffersController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/models/OffersSearch.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="23" column="5" lean-forward="true" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="5" />
           <folding />
         </state>
       </provider>
