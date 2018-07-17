@@ -78,9 +78,17 @@ class Offers extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['price_item', 'rooms_count', 'is_commercial', 'realty_sale_type', 'living_square_meters', 'realty_type_id', 'floors_count', 'kitchen_square_meters', 'total_square_meters', 'realty_id', 'advert_type_id', 'floor', 'is_bargain', 'priceUSD', 'c1501', 'c1502', 'c1503', 'c1504', 'c443', 'c1607', 'c1608', 'c1011', 'c1464', 'c274', 'c265', 'c1437'], 'integer'],
+            [['price_item', 'rooms_count', 'is_commercial', 'realty_sale_type', 'living_square_meters',
+                'realty_type_id', 'floors_count', 'kitchen_square_meters', 'total_square_meters',
+                'realty_id', 'advert_type_id', 'floor', 'is_bargain', 'priceUSD', 'c1501', 'c1502',
+                'c1503', 'c1504', 'c443', 'c1607', 'c1608', 'c1011', 'c1464', 'c274', 'c265', 'c1437',
+                'user_id','agency_id'], 'integer'],
             [['admin_time_entered'], 'safe'],
-            [['street_name', 'type', 'state_name', 'beautiful_url', 'description', 'currency_type', 'metro_station_name', 'wall_type', 'publishing_date', 'realty_type_name', 'latitude', 'longitude', 'main_photo', 'building_number_str', 'city_name', 'flat_number', 'date_end', 'district_name', 'advert_type_name', 'price_type', 'created_at', 'levels_expired', 'is_exchange', 'user'], 'string', 'max' => 255],
+            [['street_name', 'type', 'state_name', 'beautiful_url', 'description', 'currency_type',
+                'metro_station_name', 'wall_type', 'publishing_date', 'realty_type_name', 'latitude',
+                'longitude', 'main_photo', 'building_number_str', 'city_name', 'flat_number', 'date_end',
+                'district_name', 'advert_type_name', 'price_type', 'created_at', 'levels_expired',
+                'is_exchange'], 'string', 'max' => 255],
             [['realty_id'], 'unique'],
         ];
     }
@@ -128,7 +136,8 @@ class Offers extends \yii\db\ActiveRecord
             'is_exchange' => 'Is Exchange',
             'floor' => 'Floor',
             'is_bargain' => 'Is Bargain',
-            'user' => 'User',
+            'user_id' => 'User ID',
+            'agency_id' => 'Agency ID',
             'priceUSD' => 'Price Usd',
             'c1501' => 'C1501',
             'c1502' => 'C1502',

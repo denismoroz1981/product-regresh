@@ -18,21 +18,21 @@ class ApiUpload {
     private $params;
     private $button;
     private $items_per_request;
-    private $items_per_day;
+    private $items_per_hour;
     private $title;
     private $isCommon;
     private $apiDb = [
         "btn_cat"=>[
             "path"=>"https://developers.ria.com/dom/options?",
             "items_per_request"=>NULL,
-            "items_per_day"=>1000,
+            "items_per_hour"=>1000,
             "title" =>"Realty categories from DOM.RIA",
             "isCommon"=>true
         ],
         "btn_id"=>[
             "path"=>"https://developers.ria.com/dom/info/",
             "items_per_request"=>1,
-            "items_per_day"=>1000,
+            "items_per_hour"=>1000,
             "title" =>"Realty categories from DOM.RIA",
             "isCommon"=>false
 
@@ -40,7 +40,7 @@ class ApiUpload {
         "btn_offer"=>[
             "path"=>"https://developers.ria.com/dom/search?",
             "items_per_request"=>100,
-            "items_per_day"=>1000,
+            "items_per_hour"=>1000,
             "title" =>"Realty categories from DOM.RIA",
             "isCommon"=>true
         ]
@@ -76,8 +76,8 @@ class ApiUpload {
             if (count($data["items"]) < $data["count"]) {
                 $iter = ceil($data["count"] / $this->items_per_request); //number of interations
                 $data_v=array_values($data["items"]);
-                //for ($i = 0; $i <$iter; $i++) {// whole data
-                    for ($i = 1; $i <1; $i++) { //only one page for debagging
+                for ($i = 0; $i <$iter; $i++) {// whole data
+                //    for ($i = 1; $i <1; $i++) { //only one page for debugging
                     $path_iter = $this->path . "page=" . print_r($i, 1);
 
                     $data_iter = json_decode(file_get_contents($path_iter), true);
@@ -110,10 +110,16 @@ class ApiUpload {
 
     }
 
+    //the approach is column names taken from API request are equal to column names in Offers DB
+    //except for characteristics with numerial name, in DB they are accoumpanied with prefix "c"
+    // and fields
+
     static function saveToDB() { // save data uploaded from API to DB
         //$offers=Offers::find();
         //$model->id = 1
         try {
+            //removing items which are already in the database
+            //taking realty ids which are already in the database
             $realty_id_raw = Offers::find()->select("realty_id")->asArray()->all();
             $realty_id=[];
             foreach ($realty_id_raw as $v) {
@@ -133,57 +139,112 @@ class ApiUpload {
             return ["uploadedlist"=>$realty_id,"title"=>$e->getMessage()];
         }
 
-        
+        //$offer = self::getDataByID("14005240", $_SESSION["api_key"]);
+        //$offer_keys = array_keys($offer);
+        //echo gettype($offer_keys);
+        //$realty_id = $offer["characteristics_values"];
 
 
         foreach ($diff_id as $id) {
             $offer = self::getDataByID($id, $_SESSION["api_key"]);
             //$offer = self::getDataByID("14005240", $_SESSION["api_key"]);
+            //to get keys for checking
             $offer_keys = array_keys($offer);
-
 
             $model = new Offers();
             $isExists=[];
+            //saving all items except for having prefix "c"
             foreach ($offer_keys as $k=>$offer_key) {
                 if ($model->hasProperty($offer_key)) {
                     $model[$offer_key] = $offer[$offer_key];
-                    $isExists[]=true;
+                    $isExists[] = true;
+                }
+            }
+             //saving items having prefix "c"
+            if (!empty($offer["characteristics_values"])) {
+                $offerChars = $offer["characteristics_values"];
+                $offer_keysChars = array_keys($offerChars);
+                foreach ($offer_keysChars as $k => $offer_key) {
+                    if ($model->hasProperty("c" . $offer_key)) {
+                        $model["c" . $offer_key] = round($offerChars[$offer_key]);
+                        $isExists[] = true;
+                    }
+
+                }
+            }
+        //saving data about Agency
+        if (!empty($offer["agency"])) {
+            $offerAgency = $offer["agency"];
+            $offer_keysAgency = array_keys($offerAgency);
+            foreach ($offer_keysAgency as $k => $offer_key) {
+                if ($model->hasProperty($offer_key)) {
+                    $model[$offer_key] = round($offerAgency[$offer_key]);
+                    $isExists[] = true;
                 }
 
             }
-            $model->save();
+        }
+            //saving "user" and "priceUSD"
+            //to add agency id like $model["agency_id"] = $offer_keys["user"]["name"];
+            $model["priceUSD"] = round($offer["priceArr"][1]);
+
+        $model->save(false);
         }
         return ["uploadedlist" => $realty_id, "title" => "uploaded"];
+
             /*
-            $model->street_name = $offer['street_name'];
-            $model->rooms_count = $offer['rooms_count'];
-            $model->type=$offer['type'];
-            $model->is_commercial=$offer['is_commercial'];
-            $model->state_name=$offer['state_name'];
-            $model->beautiful_url=$offer['beautiful_url'];
-            $model->description=$offer['description'];
-            $model->currency_type=$offer['currency_type'];
-            if (!empty($offer['metro_station_name'])) {
-            $model->metro_station_name=$offer['metro_station_name'];}
-            $model->wall_type=$offer['wall_type'];
-            $model->publishing_date=$offer['publishing_date'];
-            $model->price=$offer['price'];
-            $model->realty_type_name=$offer['realty_type_name'];
-            $model->latitude=$offer['latitude'];
-            $model->building_number_str=$offer['building_number_str'];
-            $model->city_name=$offer['city_name'];
-            $model->living_square_meters=$offer['living_square_meters'];
-            $model->realty_type_id=$offer['realty_type_id'];
-            $model->floors_count=$offer['floors_count'];
-            $model->kitchen_square_meters=$offer['kitchen_square_meters'];
-            $model->flat_number=$offer['flat_number'];
-            $model->total_square_meters=$offer['total_square_meters'];
-            $model->realty_id=$offer['realty_id'];
-            $model->date_end=$offer['date_end'];
-            $model->district_name=$offer['district_name'];
-            $model->advert_type_name=$offer['advert_type_name'];
-            $model->advert_type_id=$offer['advert_type_id'];
-            $model->save();
+            'admin_id' => 'Admin ID',
+            'street_name' => 'Street Name',
+            'price_item' => 'Price Item',
+            'rooms_count' => 'Rooms Count',
+            'type' => 'Type',
+            'is_commercial' => 'Is Commercial',
+            'state_name' => 'State Name',
+            'beautiful_url' => 'Beautiful Url',
+            'description' => 'Description',
+            'currency_type' => 'Currency Type',
+            'metro_station_name' => 'Metro Station Name',
+            'wall_type' => 'Wall Type',
+            'publishing_date' => 'Publishing Date',
+            'realty_type_name' => 'Realty Type Name',
+            'realty_sale_type' => 'Realty Sale Type',
+            'latitude' => 'Latitude',
+            'longitude' => 'Longitude',
+            'main_photo' => 'Main Photo',
+            'building_number_str' => 'Building Number Str',
+            'city_name' => 'City Name',
+            'living_square_meters' => 'Living Square Meters',
+            'realty_type_id' => 'Realty Type ID',
+            'floors_count' => 'Floors Count',
+            'kitchen_square_meters' => 'Kitchen Square Meters',
+            'flat_number' => 'Flat Number',
+            'total_square_meters' => 'Total Square Meters',
+            'realty_id' => 'Realty ID',
+            'date_end' => 'Date End',
+            'district_name' => 'District Name',
+            'advert_type_name' => 'Advert Type Name',
+            'advert_type_id' => 'Advert Type ID',
+            'price_type' => 'Price Type',
+            'created_at' => 'Created At',
+            'levels_expired' => 'Levels Expired',
+            'is_exchange' => 'Is Exchange',
+            'floor' => 'Floor',
+            'is_bargain' => 'Is Bargain',
+            'user' => 'User',
+            'priceUSD' => 'Price Usd',
+            'c1501' => 'C1501',
+            'c1502' => 'C1502',
+            'c1503' => 'C1503',
+            'c1504' => 'C1504',
+            'c443' => 'C443',
+            'c1607' => 'C1607',
+            'c1608' => 'C1608',
+            'c1011' => 'C1011',
+            'c1464' => 'C1464',
+            'c274' => 'C274',
+            'c265' => 'C265',
+            'c1437' => 'C1437',
+            'admin_time_entered' => 'Admin Time Entered',
               }
             */
 

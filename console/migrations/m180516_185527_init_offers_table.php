@@ -54,7 +54,8 @@ class m180516_185527_init_offers_table extends Migration
                  'is_exchange'=>'string',
                  'floor'=>'integer',
                  'is_bargain'=>'integer',
-                 'user'=>'string',
+                 'user_id'=>'integer',
+                 'agency_id'=>'integer',
                  'priceUSD'=>'integer',//add entering
                  'c1501'=>'integer', //кухня-студия
                  'c1502'=>'integer', //многоуровневая

@@ -18,8 +18,17 @@ class OffersSearch extends Offers
     public function rules()
     {
         return [
-            [['admin_id', 'price_item', 'rooms_count', 'is_commercial', 'realty_sale_type', 'living_square_meters', 'realty_type_id', 'floors_count', 'kitchen_square_meters', 'total_square_meters', 'realty_id', 'advert_type_id', 'floor', 'is_bargain', 'priceUSD', 'c1501', 'c1502', 'c1503', 'c1504', 'c443', 'c1607', 'c1608', 'c1011', 'c1464', 'c274', 'c265', 'c1437'], 'integer'],
-            [['street_name', 'type', 'state_name', 'beautiful_url', 'description', 'currency_type', 'metro_station_name', 'wall_type', 'publishing_date', 'realty_type_name', 'latitude', 'longitude', 'main_photo', 'building_number_str', 'city_name', 'flat_number', 'date_end', 'district_name', 'advert_type_name', 'price_type', 'created_at', 'levels_expired', 'is_exchange', 'user', 'admin_time_entered'], 'safe'],
+            [['admin_id', 'price_item', 'rooms_count', 'is_commercial', 'realty_sale_type',
+                'living_square_meters', 'realty_type_id', 'floors_count', 'kitchen_square_meters',
+                'total_square_meters', 'realty_id', 'advert_type_id', 'floor', 'is_bargain',
+                'priceUSD', 'c1501', 'c1502', 'c1503', 'c1504', 'c443', 'c1607', 'c1608', 'c1011',
+                'c1464', 'c274', 'c265', 'c1437','user_id','agency_id'], 'integer'],
+            [['street_name', 'type', 'state_name', 'beautiful_url', 'description',
+                'currency_type', 'metro_station_name', 'wall_type', 'publishing_date',
+                'realty_type_name', 'latitude', 'longitude', 'main_photo', 'building_number_str',
+                'city_name', 'flat_number', 'date_end', 'district_name', 'advert_type_name',
+                'price_type', 'created_at', 'levels_expired', 'is_exchange', 'user',
+                'admin_time_entered'], 'safe'],
         ];
     }
 
@@ -86,6 +95,8 @@ class OffersSearch extends Offers
             'c274' => $this->c274,
             'c265' => $this->c265,
             'c1437' => $this->c1437,
+            'user_id' => $this->user_id,
+            'agency_id' => $this->agency_id,
             'admin_time_entered' => $this->admin_time_entered,
         ]);
 
@@ -111,8 +122,8 @@ class OffersSearch extends Offers
             ->andFilterWhere(['like', 'price_type', $this->price_type])
             ->andFilterWhere(['like', 'created_at', $this->created_at])
             ->andFilterWhere(['like', 'levels_expired', $this->levels_expired])
-            ->andFilterWhere(['like', 'is_exchange', $this->is_exchange])
-            ->andFilterWhere(['like', 'user', $this->user]);
+            ->andFilterWhere(['like', 'is_exchange', $this->is_exchange]);
+
 
         return $dataProvider;
     }
