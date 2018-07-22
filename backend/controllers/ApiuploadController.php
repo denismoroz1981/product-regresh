@@ -21,14 +21,18 @@ class ApiUpload {
     private $items_per_hour;
     private $title;
     private $isCommon;
+    //array with different API's. "Common" is syntacsis
     private $apiDb = [
+        //every button is linked to $apiDb items with details of api request
+        //upload category types from dom ria api
         "btn_cat"=>[
             "path"=>"https://developers.ria.com/dom/options?",
             "items_per_request"=>NULL,
-            "items_per_hour"=>1000,
+            "items_per_hour"=>1000, //actually 1000
             "title" =>"Realty categories from DOM.RIA",
             "isCommon"=>true
         ],
+        //upload info for one id from dom ria api
         "btn_id"=>[
             "path"=>"https://developers.ria.com/dom/info/",
             "items_per_request"=>1,
@@ -37,6 +41,7 @@ class ApiUpload {
             "isCommon"=>false
 
         ],
+        //upload all ids matching filter from dom ria api
         "btn_offer"=>[
             "path"=>"https://developers.ria.com/dom/search?",
             "items_per_request"=>100,
@@ -52,7 +57,7 @@ class ApiUpload {
         $this->button = $this->params["button"];
         $this->path = $this->apiDb[$this->button]["path"];
         $this->items_per_request = $this->apiDb[$this->button]["items_per_request"];
-        $this->items_per_day = $this->apiDb[$this->button]["items_per_day"];
+        //$this->items_per_day = $this->apiDb[$this->button]["items_per_day"];
         $this->title = $this->apiDb[$this->button]["title"];
         $this->isCommon = $this->apiDb[$this->button]["isCommon"];
     }
@@ -60,7 +65,7 @@ class ApiUpload {
 
 
     private function getDataCommon() {
-
+        // request type: https://developers.ria.com/dom/search?api_key=YOUR_API_KEY&PARAMETERS
         try {
             foreach ($this->params as $k => $v) {
                 $this->path .= "$k" . "=" . "$v" . "&";
@@ -78,6 +83,7 @@ class ApiUpload {
                 $data_v=array_values($data["items"]);
                 for ($i = 0; $i <$iter; $i++) {// whole data
                 //    for ($i = 1; $i <1; $i++) { //only one page for debugging
+                    //getting data by page
                     $path_iter = $this->path . "page=" . print_r($i, 1);
 
                     $data_iter = json_decode(file_get_contents($path_iter), true);
@@ -86,7 +92,9 @@ class ApiUpload {
                 }
                 $_SESSION["data_id"] = $data_v;
                 $_SESSION["api_key"] = $this->params["api_key"];
-                return ["uploadedlist" => $data_v, "title" => $this->title];
+                //leave only data absent in the database
+                $dataToSave = self::arrayDiff()["diff_id"];
+                return ["uploadedlist" => $dataToSave, "title" => $this->title];
             }
         } catch (\Exception $e) {
             return ["uploadedlist"=>"","title"=>$e->getMessage()];
@@ -113,11 +121,8 @@ class ApiUpload {
     //the approach is column names taken from API request are equal to column names in Offers DB
     //except for characteristics with numerial name, in DB they are accoumpanied with prefix "c"
     // and fields
+    static function  arrayDiff() {
 
-    static function saveToDB() { // save data uploaded from API to DB
-        //$offers=Offers::find();
-        //$model->id = 1
-        try {
             //removing items which are already in the database
             //taking realty ids which are already in the database
             $realty_id_raw = Offers::find()->select("realty_id")->asArray()->all();
@@ -130,68 +135,79 @@ class ApiUpload {
                 $diff_id =
                     //array_merge(array_diff($realty_id, $_SESSION["data_id"]),
                     array_diff($_SESSION["data_id"],$realty_id)
-            //)
+                    //)
                 ;
             } else {
                 $diff_id = $_SESSION["data_id"];
             }
-        } catch (\Exception $e) {
-            return ["uploadedlist"=>$realty_id,"title"=>$e->getMessage()];
+
+        return ["diff_id"=>$diff_id,"realty_id"=>$realty_id];
+
+    }
+
+
+    static function saveToDB() { // save data uploaded from API to DB
+        try {
+        $diff_id = self::arrayDiff()["diff_id"];
+
+        //errors handling
+            } catch (\Exception $e) {
+          return ["uploadedlist"=>"","title"=>$e->getMessage()];
         }
 
-        //$offer = self::getDataByID("14005240", $_SESSION["api_key"]);
-        //$offer_keys = array_keys($offer);
-        //echo gettype($offer_keys);
-        //$realty_id = $offer["characteristics_values"];
+        try {
+            $count = 0;
+            if (empty($diff_id)) { throw new Exception("All items saved!");}
+            foreach ($diff_id as $id) {
+                $offer = self::getDataByID($id, $_SESSION["api_key"]);
+                //$offer = self::getDataByID("14005240", $_SESSION["api_key"]);
+                //to get keys for checking
+                $offer_keys = array_keys($offer);
 
-
-        foreach ($diff_id as $id) {
-            $offer = self::getDataByID($id, $_SESSION["api_key"]);
-            //$offer = self::getDataByID("14005240", $_SESSION["api_key"]);
-            //to get keys for checking
-            $offer_keys = array_keys($offer);
-
-            $model = new Offers();
-            $isExists=[];
-            //saving all items except for having prefix "c"
-            foreach ($offer_keys as $k=>$offer_key) {
-                if ($model->hasProperty($offer_key)) {
-                    $model[$offer_key] = $offer[$offer_key];
-                    $isExists[] = true;
-                }
-            }
-             //saving items having prefix "c"
-            if (!empty($offer["characteristics_values"])) {
-                $offerChars = $offer["characteristics_values"];
-                $offer_keysChars = array_keys($offerChars);
-                foreach ($offer_keysChars as $k => $offer_key) {
-                    if ($model->hasProperty("c" . $offer_key)) {
-                        $model["c" . $offer_key] = round($offerChars[$offer_key]);
+                $model = new Offers();
+                $isExists = [];
+                //saving all items except for having prefix "c"
+                foreach ($offer_keys as $k => $offer_key) {
+                    if ($model->hasProperty($offer_key)) {
+                        $model[$offer_key] = $offer[$offer_key];
                         $isExists[] = true;
                     }
-
                 }
-            }
-        //saving data about Agency
-        if (!empty($offer["agency"])) {
-            $offerAgency = $offer["agency"];
-            $offer_keysAgency = array_keys($offerAgency);
-            foreach ($offer_keysAgency as $k => $offer_key) {
-                if ($model->hasProperty($offer_key)) {
-                    $model[$offer_key] = round($offerAgency[$offer_key]);
-                    $isExists[] = true;
+                //saving items having prefix "c"
+                if (!empty($offer["characteristics_values"])) {
+                    $offerChars = $offer["characteristics_values"];
+                    $offer_keysChars = array_keys($offerChars);
+                    foreach ($offer_keysChars as $k => $offer_key) {
+                        if ($model->hasProperty("c" . $offer_key)) {
+                            $model["c" . $offer_key] = round($offerChars[$offer_key]);
+                            $isExists[] = true;
+                        }
+
+                    }
                 }
+                //saving data about Agency
+                if (!empty($offer["agency"])) {
+                    $offerAgency = $offer["agency"];
+                    $offer_keysAgency = array_keys($offerAgency);
+                    foreach ($offer_keysAgency as $k => $offer_key) {
+                        if ($model->hasProperty($offer_key)) {
+                            $model[$offer_key] = round($offerAgency[$offer_key]);
+                            $isExists[] = true;
+                        }
 
+                    }
+                }
+                //saving "user" and "priceUSD"
+                //to add agency id like $model["agency_id"] = $offer_keys["user"]["name"];
+                $model["priceUSD"] = round($offer["priceArr"][1]);
+
+                $model->save(false);
+                $count++;
             }
+            return ["uploadedlist" => $count . " items uploaded", "title" => "Success"];
+        } catch (\Exception $e) {
+            return ["uploadedlist"=>$count ." items uploaded","title"=>$e->getMessage()];
         }
-            //saving "user" and "priceUSD"
-            //to add agency id like $model["agency_id"] = $offer_keys["user"]["name"];
-            $model["priceUSD"] = round($offer["priceArr"][1]);
-
-        $model->save(false);
-        }
-        return ["uploadedlist" => $realty_id, "title" => "uploaded"];
-
             /*
             'admin_id' => 'Admin ID',
             'street_name' => 'Street Name',
@@ -295,11 +311,13 @@ class ApiuploadController extends \yii\web\Controller
         echo 'Uploaded json from RIA.DOM';
 
         $request=Yii::$app->request->get();
+        //if save button pressed, save to DB
         if ($request["button"]=="btn_save") {
             $uploadedlist = ApiUpload::saveToDB();
 
 
         } else {
+        //if ? button pressed upload from dom ria api
             $ul = new ApiUpload($request);
             $uploadedlist = $ul->getData();
         }
