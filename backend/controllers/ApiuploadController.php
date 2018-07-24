@@ -60,6 +60,7 @@ class ApiUpload {
         //$this->items_per_day = $this->apiDb[$this->button]["items_per_day"];
         $this->title = $this->apiDb[$this->button]["title"];
         $this->isCommon = $this->apiDb[$this->button]["isCommon"];
+
     }
 
 
@@ -146,6 +147,7 @@ class ApiUpload {
     }
 
 
+
     static function saveToDB() { // save data uploaded from API to DB
         try {
         $diff_id = self::arrayDiff()["diff_id"];
@@ -155,19 +157,23 @@ class ApiUpload {
           return ["uploadedlist"=>"","title"=>$e->getMessage()];
         }
 
+
+
         try {
             $count = 0;
             if (empty($diff_id)) { throw new Exception("All items saved!");}
+            //for debugging only 100
+            //$diff_id=array_slice($diff_id,0,300);
             foreach ($diff_id as $id) {
                 $offer = self::getDataByID($id, $_SESSION["api_key"]);
-                //$offer = self::getDataByID("14005240", $_SESSION["api_key"]);
+                //$offer = self::getDataByID("14646350", $_SESSION["api_key"]);
                 //to get keys for checking
                 $offer_keys = array_keys($offer);
 
                 $model = new Offers();
                 $isExists = [];
                 //saving all items except for having prefix "c"
-                foreach ($offer_keys as $k => $offer_key) {
+               foreach ($offer_keys as $k => $offer_key) {
                     if ($model->hasProperty($offer_key)) {
                         $model[$offer_key] = $offer[$offer_key];
                         $isExists[] = true;
@@ -184,7 +190,12 @@ class ApiUpload {
                         }
 
                     }
+                    //echo var_export($offer["characteristics_values"]);
+
+
+                    //echo var_export(self::$charValuesArr);
                 }
+
                 //saving data about Agency
                 if (!empty($offer["agency"])) {
                     $offerAgency = $offer["agency"];
@@ -205,8 +216,12 @@ class ApiUpload {
                 $count++;
             }
             return ["uploadedlist" => $count . " items uploaded", "title" => "Success"];
+            //echo var_dump($charValuesArr);
+            //return ["uploadedlist" => $charValuesArr, "title" => "Success"];
         } catch (\Exception $e) {
-            return ["uploadedlist"=>$count ." items uploaded","title"=>$e->getMessage()];
+               return ["uploadedlist"=>$count ." items uploaded","title"=>$e->getMessage()];
+            //echo var_dump(self::$charValuesArr);
+            //return ["uploadedlist"=>self::$charValuesArr,"title"=>$e->getMessage()];
         }
             /*
             'admin_id' => 'Admin ID',
@@ -279,7 +294,9 @@ class ApiuploadController extends \yii\web\Controller
         return $this->render('index');
     }
 
+public function actionChar() {
 
+}
 
 
 
