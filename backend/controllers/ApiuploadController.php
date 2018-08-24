@@ -210,8 +210,9 @@ class ApiUpload {
                 }
                 //saving "user" and "priceUSD"
                 //to add agency id like $model["agency_id"] = $offer_keys["user"]["name"];
-                $model["priceUSD"] = round($offer["priceArr"][1]);
-
+                if (!empty($offer["priceArr"])) {
+                    $model["priceUSD"] = $offer["priceArr"][1];
+                }
                 $model->save(false);
                 $count++;
             }
@@ -219,7 +220,8 @@ class ApiUpload {
             //echo var_dump($charValuesArr);
             //return ["uploadedlist" => $charValuesArr, "title" => "Success"];
         } catch (\Exception $e) {
-               return ["uploadedlist"=>$count ." items uploaded","title"=>$e->getMessage()];
+               return ["uploadedlist"=>$count ." items uploaded, id=".$id,"title"=>$e->getMessage()];
+
             //echo var_dump(self::$charValuesArr);
             //return ["uploadedlist"=>self::$charValuesArr,"title"=>$e->getMessage()];
         }
